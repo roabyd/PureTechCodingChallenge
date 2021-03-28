@@ -34,8 +34,9 @@ defined using a custom PublicHoliday class. Public holidays can be defined in th
 To achieve this, the PublicHoliday class implements 2 constructors, one which takes a day, a month and a Boolean that determines  
 if holidays should be skipped if they fall on a weekend, and another that takes a day of the week, a day occurrence value and a  
 month. Once the type of holiday has been determined via the constructor parameters, I have created a method that will return a list  
-of public holiday dates that would fall between 2 supplied dates. This list is then passed as a parameter into the first overload  
-of this method to return the number of business days.  
+of public holiday dates that would fall between 2 supplied dates. This will also take into account dates that have already been found
+in order to make up for 2 public holidays that occur on the weekend (ie Christmas Day and Boxing Day). This list is then passed as 
+a parameter into the first overload of this method to return the number of business days.  
   
   
 # NUnit Test project 
