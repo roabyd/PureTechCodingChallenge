@@ -4,6 +4,7 @@ A small project to display my coding style for the PureTech DesignCrowd Technica
 The main class in the project is the BusinessDaysCounter.cs which contains 3 methods:
 - WeekdaysBetweenTwoDates
 - BusinessDaysBetweenTwoDates (2 overloads)
+
 These methods are used to calculate the number of weekdays between two dates (non-inclusive), allowing public holidays to be 
 accounted for and/or defined using the DateHelper.cs helper class and the PublicHoliday.cs model.
 
