@@ -16,20 +16,22 @@ namespace WorkDayCounter.Helpers
             return date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday;
         }
 
-        public static DateTime GetNextWeekday(DateTime date)
+        public static DateTime GetNextWeekday(DateTime date, IList<DateTime> existingHolidays)
         {
-            if (IsWeekday(date))
+            bool avalableDayFound = false;
+            int daysAdded = 0;
+            while (!avalableDayFound)
             {
-                return date;
+                if (IsWeekday(date.AddDays(daysAdded)) && !existingHolidays.Contains(date.AddDays(daysAdded)))
+                {
+                    avalableDayFound = true;
+                }
+                else
+                {
+                    daysAdded++;
+                }
             }
-            else if (IsWeekday(date.AddDays(1)))
-            {
-                return date.AddDays(1);
-            }
-            else
-            {
-                return date.AddDays(2);
-            }
+            return date.AddDays(daysAdded);
         }
 
         public static DateTime GetDateOfDayInMonth(DayOfWeek day, int dayOccurance, int month, int year)
@@ -51,6 +53,23 @@ namespace WorkDayCounter.Helpers
                 }
             }
             return resultingDate;
+        }
+
+        public static int GetBusinessDaysBetweenDates(DateTime firstDate, DateTime secondDate, IList<DateTime> publicHolidays)
+        {
+            int numOfBusinessDays = 0;
+            for (DateTime date = firstDate.AddDays(1); date.Date < secondDate.Date; date = date.AddDays(1))
+            {
+                if (publicHolidays == null && DateHelper.IsWeekday(date))
+                {
+                    numOfBusinessDays++;
+                }
+                else if (publicHolidays != null &&!publicHolidays.Contains(date.Date) && DateHelper.IsWeekday(date))
+                {
+                    numOfBusinessDays++;
+                }              
+            }
+            return numOfBusinessDays;
         }
     }
 }

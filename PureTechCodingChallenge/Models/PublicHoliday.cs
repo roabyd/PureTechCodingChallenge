@@ -14,6 +14,8 @@ namespace WorkDayCounter.Models
         bool mIsSkippedOnWeekend;
         bool mUsesSpecificDate;
 
+        //Constructor for a public holiday that always occurs on the same day that may or may not be skipped
+        //when it occurs on a weekend on a weekend
         public PublicHoliday(int day, int month, bool isSkippedOnWeekend)
         {
             mDay = day;
@@ -22,6 +24,7 @@ namespace WorkDayCounter.Models
             mUsesSpecificDate = true;
         }
 
+        //Constructor for a public holiday that occurs on a certain day on a certain month
         public PublicHoliday(DayOfWeek dayOfWeek, int dayOccurance, int month)
         {
             mDayOccurance = dayOccurance;
@@ -30,7 +33,7 @@ namespace WorkDayCounter.Models
             mUsesSpecificDate = false;
         }
 
-        public List<DateTime> GetListOfHolidaysBetweenDates(DateTime firstDate, DateTime secondDate)
+        public List<DateTime> GetListOfHolidaysBetweenDates(DateTime firstDate, DateTime secondDate, IList<DateTime> foundHolidayDates)
         {
             List<DateTime> resultingDates = new List<DateTime>();
             if (DateHelper.DatesHaveDaysInBetween(firstDate, secondDate))
@@ -43,7 +46,7 @@ namespace WorkDayCounter.Models
                     }
                     else
                     {
-                        resultingDates = GetWeekendExtendedHolidayDates(firstDate, secondDate);
+                        resultingDates = GetWeekendExtendedHolidayDates(firstDate, secondDate, foundHolidayDates);
                     }
                 }
                 else
@@ -63,14 +66,14 @@ namespace WorkDayCounter.Models
             {
                 if (date.Day.Equals(mDay) && date.Month.Equals(mMonth) && DateHelper.IsWeekday(date))
                 {
-                    resultingDates.Add(date);
+                    resultingDates.Add(date.Date);
                 }
             }
 
             return resultingDates;
         }
 
-        private List<DateTime> GetWeekendExtendedHolidayDates(DateTime firstDate, DateTime secondDate)
+        private List<DateTime> GetWeekendExtendedHolidayDates(DateTime firstDate, DateTime secondDate, IList<DateTime> foundHolidayDates)
         {
             List<DateTime> resultingDates = new List<DateTime>();
 
@@ -80,11 +83,11 @@ namespace WorkDayCounter.Models
                 {
                     if (DateHelper.IsWeekday(date))
                     {
-                        resultingDates.Add(date);
+                        resultingDates.Add(date.Date);
                     }
-                    else if (DateHelper.GetNextWeekday(date) < secondDate)
+                    else if (DateHelper.GetNextWeekday(date.Date, foundHolidayDates) < secondDate)
                     {
-                        resultingDates.Add(DateHelper.GetNextWeekday(date));
+                        resultingDates.Add(DateHelper.GetNextWeekday(date.Date, foundHolidayDates));
                     }        
                 }
             }
@@ -96,7 +99,7 @@ namespace WorkDayCounter.Models
         {
             List<DateTime> resultingDates = new List<DateTime>();
 
-            for (DateTime date = firstDate.AddDays(1); date.Date < secondDate.Date; date = date.AddDays(1))
+            for (DateTime date = firstDate.AddDays(1).Date; date < secondDate.Date; date = date.AddDays(1))
             {
                 if (date.Equals(DateHelper.GetDateOfDayInMonth(mDayOfWeek, mDayOccurance, mMonth, date.Year)))
                 {

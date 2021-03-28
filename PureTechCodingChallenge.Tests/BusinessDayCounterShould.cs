@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using PureTechCodingChallenge.Data;
 using System;
 using System.Collections.Generic;
 using WorkDayCounter.Models;
@@ -166,7 +167,7 @@ namespace WorkDayCounter.Tests
 
             Assert.That(mSut.BusinessDaysBetweenTwoDates(new DateTime(2021, 1, 31), new DateTime(2021, 3, 1), mHolidays), Is.EqualTo(19));
 
-            Assert.That(mSut.BusinessDaysBetweenTwoDates(firstJan2020, firstJan2020.AddYears(2), mHolidays), 
+            Assert.That(mSut.BusinessDaysBetweenTwoDates(firstJan2020, firstJan2020.AddYears(2), mHolidays),
                 Is.EqualTo(mSut.WeekdaysBetweenTwoDates(firstJan2020, firstJan2020.AddYears(2)) - 2),
                 "There should be 2 less days when 2 public holidays happen over the period");
         }
@@ -176,7 +177,7 @@ namespace WorkDayCounter.Tests
         public void CheckNumOfDaysWithDifferentHolidayTypes(DateTime firstDate, DateTime secondDate)
         {
             mHolidays = new List<PublicHoliday>
-            {                
+            {
                 new PublicHoliday(5, 6, false),
                 new PublicHoliday(DayOfWeek.Tuesday, 1, 6),
                 new PublicHoliday(12, 6, true)

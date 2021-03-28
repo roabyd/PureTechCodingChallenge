@@ -13,13 +13,7 @@ namespace WorkDayCounter.Models
             int numOfWeekdays = 0;
             if (DateHelper.DatesHaveDaysInBetween(firstDate, secondDate))
             {
-                for (DateTime date = firstDate.AddDays(1); date.Date < secondDate.Date; date = date.AddDays(1))
-                {
-                    if (DateHelper.IsWeekday(date))
-                    {
-                        numOfWeekdays++;
-                    }
-                }
+                numOfWeekdays = DateHelper.GetBusinessDaysBetweenDates(firstDate, secondDate, null);
             }
 
             return numOfWeekdays;
@@ -28,17 +22,10 @@ namespace WorkDayCounter.Models
         //Function to calculate the number of weekdays between 2 dates (non-inclusive) that are not in a public holiday list
         public int BusinessDaysBetweenTwoDates(DateTime firstDate, DateTime secondDate, IList<DateTime> publicHolidays)
         {
-            int numOfBusinessDays = WeekdaysBetweenTwoDates(firstDate, secondDate);
-
-            if (numOfBusinessDays > 0)
+            int numOfBusinessDays = 0;
+            if (DateHelper.DatesHaveDaysInBetween(firstDate, secondDate))
             {
-                for (DateTime date = firstDate.AddDays(1); date.Date < secondDate.Date; date = date.AddDays(1))
-                {
-                    if (publicHolidays.Contains(date) && DateHelper.IsWeekday(date))
-                    {
-                        numOfBusinessDays--;
-                    }
-                }
+                numOfBusinessDays = DateHelper.GetBusinessDaysBetweenDates(firstDate, secondDate, publicHolidays);
             }
 
             return numOfBusinessDays;
@@ -54,7 +41,7 @@ namespace WorkDayCounter.Models
                 List<DateTime> publicHolidayDates = new List<DateTime>();
                 foreach (PublicHoliday holiday in publicHolidays)
                 {
-                    publicHolidayDates.AddRange(holiday.GetListOfHolidaysBetweenDates(firstDate, secondDate));
+                    publicHolidayDates.AddRange(holiday.GetListOfHolidaysBetweenDates(firstDate, secondDate, publicHolidayDates));
                 }
                 numOfBusinessDays = BusinessDaysBetweenTwoDates(firstDate, secondDate, publicHolidayDates);
             }
