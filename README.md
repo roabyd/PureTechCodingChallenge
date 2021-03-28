@@ -12,7 +12,9 @@ To assist with the accuracy of this solution I have also included an NUnit Test 
 
 # WeekdaysBetweenTwoDates
 This function will first check to see if there is a gap between the dates, and once this is confirmed, the number of weekdays
-between the two dates is calculated.
+between the two dates is calculated. This is achieved by iterating through each day in between the 2 supplied dates and checking 
+if each day is a weekday or not. If a weekday is found, the count is increased and returned to the user once all of the dates
+have been checked.
 
 # BusinessDaysBetweenTwoDates (First overload taking a list of DateTime public holiday dates)
 
